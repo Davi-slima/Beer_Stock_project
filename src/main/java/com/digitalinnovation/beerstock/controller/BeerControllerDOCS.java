@@ -1,14 +1,18 @@
 package com.digitalinnovation.beerstock.controller;
 
 import com.digitalinnovation.beerstock.dto.BeerDTO;
+import com.digitalinnovation.beerstock.dto.QuantityDTO;
 import com.digitalinnovation.beerstock.exceptions.BeerAlreadyRegisteredException;
 import com.digitalinnovation.beerstock.exceptions.BeerNotFoundException;
+import com.digitalinnovation.beerstock.exceptions.BeerStockExceededException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Api("Manages beer stock")
@@ -40,4 +44,20 @@ public interface BeerControllerDOCS {
             @ApiResponse(code = 404, message = "Beer with given id not found.")
     })
     void deleteById(@PathVariable Long id) throws BeerNotFoundException;
+
+    @ApiOperation(value = "Increment beer by a given id quantity in a stock")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success beer incremented in stock"),
+            @ApiResponse(code = 400, message = "Beer not successfully increment in stock"),
+            @ApiResponse(code = 404, message = "Beer with given id not found.")
+    })
+    BeerDTO increment(@PathVariable Long id, @RequestBody @Valid QuantityDTO quantityDTO) throws BeerNotFoundException, BeerStockExceededException;
+
+    @ApiOperation(value = "Decrement beer by a given id quantity in a stock")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success beer decremented in stock"),
+            @ApiResponse(code = 400, message = "Beer not successfully increment in stock"),
+            @ApiResponse(code = 404, message = "Beer with given id not found.")
+    })
+    BeerDTO decrement(@PathVariable Long id, @RequestBody @Valid QuantityDTO quantityDTO) throws BeerNotFoundException, BeerStockExceededException;
 }
